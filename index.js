@@ -15,6 +15,7 @@ const sql = mysql2.createPool({
     database: process.env.NOME_BANCO
 })
 
+//resposta
 app.get("/", (request, response) => { 
     const comandoSelect = "SELECT * FROM musicas_vitorteodosio"
 
@@ -28,6 +29,7 @@ app.get("/", (request, response) => {
     })
 })
 
+//cadastrar
 app.post("/cadastrar", (request, response) => { 
     const { titulo, artista, genero, ano, duracao } = request.body
 
@@ -42,6 +44,23 @@ app.post("/cadastrar", (request, response) => {
         response.status(201).json({ mensagem: "Música cadastrada com sucesso!" })
     })
 })
+
+//apagar
+app.delete("/apagar/:id", (request, response) => {
+    const { id } = request.params
+
+    const comandoDelete = "DELETE FROM musicas_vitorteodosio WHERE id = ?"
+
+    sql.query(comandoDelete, [id], (error) => {
+        if (error) {
+            console.log(error)
+            return
+        }
+
+        response.json({ mensagem: "Música apagada com sucesso!" })
+    })
+})
+
 
 app.listen(3000, () => {
     console.log("Servidor online");
